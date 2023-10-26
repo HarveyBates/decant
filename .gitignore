@@ -1,0 +1,30 @@
+# User-defined
+.DS_Store
+Thumbs.db
+*.swp
+*.*.swp
+*.html
+tmp
+fonts
+
+# Clion
+.idea
+*-debug
+cmake-build-debug
+.cproject
+.osx.project
+*.o
+*.a
+*.elf
+*.bin
+*.hex
+imgui
+
+# FreeCAD
+*.FCBak
+*.*.FCBak
+
+# KiCAD
+~*.kicad_pcb.lck
+*-backups
+*.dcm

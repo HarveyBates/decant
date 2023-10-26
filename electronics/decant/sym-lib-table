@@ -1,0 +1,7 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "tactile-switches")(type "KiCad")(uri "${KIPRJMOD}/components/extern/symbols/tactile-switches.kicad_sym")(options "")(descr ""))
+  (lib (name "crystals")(type "KiCad")(uri "${KIPRJMOD}/components/extern/symbols/crystals.kicad_sym")(options "")(descr ""))
+  (lib (name "switches")(type "KiCad")(uri "${KIPRJMOD}/components/extern/symbols/switches.kicad_sym")(options "")(descr ""))
+  (lib (name "connectors")(type "KiCad")(uri "${KIPRJMOD}/components/extern/symbols/connectors.kicad_sym")(options "")(descr ""))
+)
