@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_impl_sdl2.h"
+#include "spdlog/spdlog.h"
 #include "ui_bottombar.h"
 #include "ui_colours.h"
 #include "ui_config.h"

@@ -3,6 +3,9 @@
 
 #include <cstdint>
 
+#define CAN_ID_STD (0x00000000U)
+#define CAN_ID_EXT (0x00000004U)
+
 /// Function codes for CANopen frames
 enum CANopenFC : uint16_t {
   FC_NMT           = 0x0000,
@@ -70,36 +73,13 @@ enum CANopenSDOAbort : uint32_t {
 };
 
 typedef struct {
-  uint32_t StdId; /*!< Specifies the standard identifier.
-                    This parameter must be a number between Min_Data = 0 and
-                    Max_Data = 0x7FF. */
-
-  uint32_t ExtId; /*!< Specifies the extended identifier.
-                    This parameter must be a number between Min_Data = 0 and
-                    Max_Data = 0x1FFFFFFF. */
-
-  uint32_t IDE; /*!< Specifies the type of identifier for the message that will
-                be transmitted. This parameter can be a value of @ref
-                CAN_identifier_type */
-
-  uint32_t RTR; /*!< Specifies the type of frame for the message that will be
-                transmitted. This parameter can be a value of @ref
-                CAN_remote_transmission_request */
-
-  uint32_t DLC; /*!< Specifies the length of the frame that will be transmitted.
-                This parameter must be a number between Min_Data = 0 and
-                Max_Data = 8. */
-
-  uint32_t Timestamp; /*!< Specifies the timestamp counter value captured on
-                         start of frame reception.
-                          @note: Time Triggered Communication Mode must be
-                         enabled. This parameter must be a number between
-                         Min_Data = 0 and Max_Data = 0xFFFF. */
-
-  uint32_t FilterMatchIndex; /*!< Specifies the index of matching acceptance
-                          filter element. This parameter must be a number
-                          between Min_Data = 0 and Max_Data = 0xFF. */
-
+  uint32_t StdId;  /// Standard frame ID (if IDE = `CAN_ID_STD`)
+  uint32_t ExtId;  /// Extended frame ID (if IDE = `CAN_ID_STD`)
+  uint32_t IDE;    ///
+  uint32_t RTR;
+  uint32_t DLC;
+  uint32_t Timestamp;
+  uint32_t FilterMatchIndex;
 } CAN_RxHeaderTypeDef;
 
 #endif  // CAN_VISUALISER_CAN_DEFINITIONS_H

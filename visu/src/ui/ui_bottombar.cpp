@@ -22,12 +22,14 @@ void UIBottombar::display() {
 
   if (ImGui::Begin("StatusBar", nullptr, flags)) {
     if (ImGui::BeginMenuBar()) {
-      ImGui::Text("CAN-Scope: ");
-      // if (USBHandler::is_connected()) {
-      //   ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Connected");
-      // } else {
-      //   ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Disconnected");
-      // }
+      ImGui::Text("Device:");
+      if (USBHandler::is_connected()) {
+        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Online");
+      } else {
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Offline");
+      }
+
+      ImGui::Text("|");
 
       if (can_rate) {
         ImGui::Text("CAN Speed: %s kbps", can_rate);

@@ -8,6 +8,9 @@
 #include <thread>
 #include <vector>
 
+#include "CAN/can_interface.h"
+#include "spdlog/spdlog.h"
+
 class USBHandler {
  public:
   struct USBDevice {
@@ -22,6 +25,7 @@ class USBHandler {
   static USBStatus connect();
   static void disconnect(bool bypass_wait = false);
   static void read(std::atomic<bool>& kill);
+  static bool is_connected();
 };
 
 #endif  // CAN_VISUALISER_USB_HANDLER_H

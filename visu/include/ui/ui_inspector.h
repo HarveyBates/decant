@@ -11,7 +11,7 @@
 #include "ui_config.h"
 
 class UIInspector {
-  static void add_row(CANInterface::CANPacket* packet, uint8_t n_columns,
+  static void add_row(CANInterface::CANopenMessage* packet, uint8_t n_columns,
                       uint32_t row_idx, uint32_t& selected_row_idx);
   static void add_rows(uint8_t n_columns);
   static void add_header();

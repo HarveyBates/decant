@@ -31,6 +31,7 @@ USBHandler::USBStatus USBHandler::connect() {
   // USB context, on thread kill this is freed
   if (!ctx) {
     if (libusb_init(&ctx) < 0) {
+      spdlog::error("USB initialisation failed.");
       return USB_ERROR;
     }
   }
@@ -40,6 +41,8 @@ USBHandler::USBStatus USBHandler::connect() {
   if (n_devices <= 0) {
     return USB_NO_DEVICES_FOUND;
   }
+
+  spdlog::debug("{} USB devices found.", n_devices);
 
   for (ssize_t i = 0; i < n_devices; i++) {
     USBDevice usb_device;
@@ -75,7 +78,7 @@ USBHandler::USBStatus USBHandler::connect() {
     active_device = usb_device;
     device_connected.store(true);
 
-    std::cout << "Decant: Connected." << std::endl;
+    spdlog::debug("Device connected.");
 
     libusb_free_device_list(devices, 1);
     return USB_OK;
@@ -103,12 +106,14 @@ void USBHandler::disconnect(bool bypass_wait) {
   // bypassed when exiting the program.
   if (!bypass_wait) {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  } else {
+    spdlog::debug("Bypassing USB disconnect sleep.");
   }
 
   device_connected.store(false);
 
   lock.unlock();
-  std::cout << "Decant: Disconnected." << std::endl;
+  spdlog::debug("Device disconnected.");
 }
 
 void USBHandler::read(std::atomic<bool>& kill) {
@@ -144,14 +149,14 @@ void USBHandler::read(std::atomic<bool>& kill) {
         continue;
     }
 
-    if (actual_len > 0) {
-      // Success (data contains received data)
-      for (uint8_t i = 0; i < (uint8_t)sizeof(data); i++) {
-        if (i > actual_len) break;
-        printf("%02x ", data[i]);
-      }
-      printf("\n");
+    if (actual_len != sizeof(CANInterface::CANopenMessageRAW)) {
+      lock.unlock();
+      continue;
     }
+
+    CANInterface::CANopenMessageRAW raw_msg{};
+    memcpy(&raw_msg, data, sizeof(raw_msg));
+    CANInterface::push(raw_msg);
 
     lock.unlock();
   }
@@ -165,4 +170,11 @@ void USBHandler::read(std::atomic<bool>& kill) {
   if (ctx) {
     libusb_exit(ctx);
   }
+
+  spdlog::debug("USB RX thread terminated.");
+}
+
+bool USBHandler::is_connected() {
+  std::unique_lock<std::mutex> lock(mtx);
+  return device_connected;
 }

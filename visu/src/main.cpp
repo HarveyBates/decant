@@ -1,9 +1,13 @@
 #include <thread>
 
+#include "spdlog/spdlog.h"
 #include "ui/ui.h"
 
 int main() {
+  spdlog::set_level(spdlog::level::debug);
+
   if (UI::init() != UI::UI_OK) {
+    spdlog::error("UI initialisation failed.");
     return -1;
   }
 

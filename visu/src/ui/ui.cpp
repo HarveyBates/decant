@@ -14,7 +14,6 @@ UI::UIStatus UI::init() {
   }
 
   UIColours::init();
-  CANInterface::init();  // Debug only
 
   return create_window();
 }
@@ -135,9 +134,9 @@ UI::UIStatus UI::update() {
   const float display_div_x = display_size.x / 2;
   const float display_div_y = display_size.y / 2;
   const ImVec2 INSPECTOR_SIZE =
-      ImVec2(display_div_x - 30, (display_size.y - 60));
-  const ImVec2 GRAPH_SIZE    = ImVec2(display_div_x, display_div_y);
-  const ImVec2 ANALYSIS_SIZE = ImVec2(display_div_x, display_div_y - 68);
+      ImVec2(display_div_x + 200, (display_size.y - 60));
+  const ImVec2 GRAPH_SIZE    = ImVec2(display_div_x - 200, display_div_y);
+  const ImVec2 ANALYSIS_SIZE = ImVec2(display_div_x - 200, display_div_y - 68);
 
   ImGui::Begin("CAN-Visualiser", nullptr,
                ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove |
@@ -171,7 +170,7 @@ UI::UIStatus UI::update() {
   ImGui::PopStyleColor(2);
   ImGui::EndChild();
 
-  ImGui::SetCursorPos(ImVec2(display_div_x - 14, display_div_y + 35));
+  ImGui::SetCursorPos(ImVec2(display_div_x + 214, display_div_y + 35));
   ImGui::BeginChild("Analysis", ANALYSIS_SIZE, true);
   UIExplorer::display();
   ImGui::EndChild();
@@ -204,4 +203,6 @@ void UI::destroy() {
   SDL_GL_DeleteContext(gl_context);
   SDL_DestroyWindow(window);
   SDL_Quit();
+
+  spdlog::debug("UI cleanup complete.");
 }

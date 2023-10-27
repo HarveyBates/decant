@@ -7,6 +7,7 @@ project(decant-visu)
 # For GUI
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(spdlog REQUIRED)
 
 # Include LIBUSB
 find_package(PkgConfig REQUIRED)
@@ -39,6 +40,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${SDL2_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PUBLIC ${OPENGL_INCLUDE_DIR})
 
 # Link SDL2 and OpenGL
+target_link_libraries(${PROJECT_NAME} spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>)
 target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} ${LIBUSB1_LIBRARIES})

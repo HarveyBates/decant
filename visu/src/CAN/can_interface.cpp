@@ -1,55 +1,70 @@
 #include "CAN/can_interface.h"
 
-static std::vector<CANInterface::CANPacket> packets;
+static std::mutex mtx;
+static std::vector<CANInterface::CANopenMessage> packets;
 
-static const auto interval_ms(500);
-static std::chrono::time_point<std::chrono::high_resolution_clock> last_exe;
-
-void CANInterface::init() {
-  for (uint8_t i = 0; i < 20; i++) {
-    CANInterface::CANPacket packet = get_packet();
-    packet.id                      = i;
-    packets.push_back(packet);
-  }
+void CANInterface::push(CANInterface::CANopenMessageRAW raw_msg) {
+  std::lock_guard<std::mutex> lock(mtx);
+  CANopenMessage msg = format_message(raw_msg);
+  packets.emplace_back(msg);
 }
 
-CANInterface::CANPacket CANInterface::get_packet() {
-  CANPacket packet{};
+CANInterface::CANopenMessage CANInterface::format_message(
+    CANInterface::CANopenMessageRAW& raw_msg) {
+  CANopenMessage msg{};
 
-  // Create a random engine
-  std::default_random_engine engine(std::random_device{}());
-
-  // Create a uniform distribution for uint8_t
-  std::uniform_int_distribution<uint8_t> u8_dist(0, UINT8_MAX);
-  std::uniform_int_distribution<uint16_t> u16_dist(0x700, 0x710);
-  std::uniform_int_distribution<uint32_t> u32_dist(0, UINT32_MAX);
-
-  packet.error            = u8_dist(engine);
-  packet.function_code    = u16_dist(engine);
-  packet.can_id           = u32_dist(engine);
-  packet.data_length_code = u8_dist(engine);
-
-  for (auto& std_data : packet.standard_frame) {
-    std_data = u8_dist(engine);
+  // Get the CAN-ID, either Extended or Standard
+  switch (raw_msg.header.IDE) {
+    case CAN_ID_STD:
+      msg.cob_id        = raw_msg.header.StdId;
+      msg.can_id        = (raw_msg.header.StdId & 0x7F);   // CAN-ID (Std frame)
+      msg.function_code = (raw_msg.header.StdId & 0x780);  // FC
+      break;
+    case CAN_ID_EXT:
+      msg.cob_id = raw_msg.header.ExtId;
+      // TODO: Implement extended frame
+      // msg.can_id = (raw_msg.header.ExtId & 0xFF00) >> 8;   // CAN-ID (Ext
+      // frame) msg.function_code = (raw_msg.header.ExtId & 0x780);  // FC
+      break;
+    default:
+      // Something has gone horribly wrong
+      break;
   }
 
-  for (auto& ext_data : packet.extended_frame) {
-    ext_data = u8_dist(engine);
-  }
+  // Get data length code
+  msg.data_length_code = raw_msg.header.DLC;
 
-  return packet;
+  // Get actual message data
+  memcpy(msg.data, raw_msg.data, sizeof(msg.data));
+
+  // Calculate message received time (this feels super hacky)
+  auto sys_time     = std::chrono::system_clock::now();
+  auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(
+                          sys_time.time_since_epoch()) %
+                      1000;
+
+  // Calculate local time
+  msg.unix_timestamp   = std::time(nullptr);
+  struct tm* localtime = std::localtime(&msg.unix_timestamp);
+  std::strftime(msg.local_time, sizeof(msg.local_time), "%Y/%m/%d %H:%M:%S",
+                localtime);
+
+  // Add milliseconds to local time
+  snprintf(&msg.local_time[19], sizeof(msg.local_time) - 19, ".%lld",
+           milliseconds.count());
+
+  spdlog::trace("Message RX");
+
+  return msg;
 }
 
-std::vector<CANInterface::CANPacket>* CANInterface::get_packets() {
-  auto now = std::chrono::high_resolution_clock::now();
-  auto elapsed_ms =
-      std::chrono::duration_cast<std::chrono::milliseconds>(now - last_exe)
-          .count();
-
-  if (elapsed_ms >= interval_ms) {
-    CANInterface::CANPacket packet = get_packet();
-    packets.push_back(packet);
-    last_exe = now;
-  }
+std::vector<CANInterface::CANopenMessage>* CANInterface::get_packets() {
+  std::lock_guard<std::mutex> lock(mtx);
   return &packets;
 };
+
+void CANInterface::clear_packets() {
+  std::lock_guard<std::mutex> lock(mtx);
+  spdlog::debug("Cleared packets.");
+  packets.clear();
+}
