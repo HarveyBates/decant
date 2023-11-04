@@ -1,13 +1,13 @@
-#ifndef CAN_VISUALISER_CAN_INTERFACE_H
-#define CAN_VISUALISER_CAN_INTERFACE_H
+#ifndef QT_VISU_CAN_INTERFACE_H
+#define QT_VISU_CAN_INTERFACE_H
 
+#include <QQueue>
 #include <chrono>
 #include <cstdint>
 #include <ctime>
 #include <queue>
 #include <random>
 #include <thread>
-#include <vector>
 
 #include "can_definitions.h"
 #include "spdlog/spdlog.h"
@@ -20,22 +20,20 @@ class CANInterface {
   };
 
   struct CANopenMessage {
-    uint16_t id;
-    uint8_t error;
-    uint32_t cob_id;
-    uint16_t function_code;
+    char timestamp[48];
+    uint16_t cob_id;
+    uint16_t fc;
+    const char* canopen_fc;
     uint32_t can_id;
-    uint8_t data_length_code;
+    uint8_t dlc;
     uint8_t data[8];
-    std::time_t unix_timestamp;
-    char local_time[48];
+    char ascii[8];
   };
 
+  static const char* function_code_to_canopen(uint16_t function_code);
+
  public:
-  static void push(CANopenMessageRAW msg);
   static CANopenMessage format_message(CANopenMessageRAW& raw_msg);
-  static std::vector<CANopenMessage>* get_packets();
-  static void clear_packets();
 };
 
-#endif  // CAN_VISUALISER_CAN_INTERFACE_H
+#endif  // QT_VISU_CAN_INTERFACE_H

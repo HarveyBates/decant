@@ -1,5 +1,5 @@
-#ifndef CAN_VISUALISER_CAN_DEFINITIONS_H
-#define CAN_VISUALISER_CAN_DEFINITIONS_H
+#ifndef QT_VISU_CAN_DEFINITIONS_H
+#define QT_VISU_CAN_DEFINITIONS_H
 
 #include <cstdint>
 
@@ -82,4 +82,4 @@ typedef struct {
   uint32_t FilterMatchIndex;
 } CAN_RxHeaderTypeDef;
 
-#endif  // CAN_VISUALISER_CAN_DEFINITIONS_H
+#endif  // QT_VISU_CAN_DEFINITIONS_H

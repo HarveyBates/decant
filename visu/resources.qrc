@@ -1,0 +1,8 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/">
+        <file>resources/icons/settings.png</file>
+        <file>resources/icons/inbox.png</file>
+        <file>resources/icons/outbox.png</file>
+    </qresource>
+</RCC>

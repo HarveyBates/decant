@@ -23,6 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "CANopen/canopen_driver.h"
 
 /* USER CODE END Includes */
 
@@ -107,6 +108,7 @@ int main(void)
   MX_CAN2_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_UART_Transmit(&huart2, (uint8_t*)"Started", sizeof("Started"), 10);
 
   /* USER CODE END 2 */
 
@@ -346,9 +348,11 @@ void StartDefaultTask(void *argument)
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
+  CANopen_init(&hcan1, &huart2);
   /* Infinite loop */
   for(;;)
   {
+    CANopen_Queue_Process();
     osDelay(1);
   }
   /* USER CODE END 5 */
@@ -384,6 +388,7 @@ void Error_Handler(void)
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
+  HAL_UART_Transmit(&huart2, (uint8_t*)"ERROR", sizeof("ERROR"), 10);
   while (1)
   {
   }

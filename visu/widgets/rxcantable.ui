@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RXCANTable</class>
+ <widget class="QWidget" name="RXCANTable">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>RXCANTable</string>
+  </property>
+  <widget class="QTableWidget" name="tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>30</y>
+     <width>341</width>
+     <height>221</height>
+    </rect>
+   </property>
+   <column>
+    <property name="text">
+     <string>Timestamp</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>COB-ID</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>FC</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>CANopen FC</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>CAN-ID</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>DLC</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>B0</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>B1</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>B2</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>B3</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>B4</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>B5</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>B6</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>B7</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
+     <string>ASCII</string>
+    </property>
+   </column>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

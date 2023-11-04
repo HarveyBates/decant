@@ -21,6 +21,9 @@ static constexpr uint8_t INTERFACE_NUM = 1;
 /// Handler for thread access to shared resources
 std::mutex mtx;
 
+/// Reference to raw rx table
+static RXCANTable* raw_table = nullptr;
+
 USBHandler::USBStatus USBHandler::connect() {
   // Once connected stop enumeration
   if (device_connected.load()) return USB_OK;
@@ -41,8 +44,6 @@ USBHandler::USBStatus USBHandler::connect() {
   if (n_devices <= 0) {
     return USB_NO_DEVICES_FOUND;
   }
-
-  spdlog::debug("{} USB devices found.", n_devices);
 
   for (ssize_t i = 0; i < n_devices; i++) {
     USBDevice usb_device;
@@ -77,6 +78,7 @@ USBHandler::USBStatus USBHandler::connect() {
     std::unique_lock<std::mutex> lock(mtx);
     active_device = usb_device;
     device_connected.store(true);
+    emit USBEmitter::instance().updateConnectionStatus(true);
 
     spdlog::debug("Device connected.");
 
@@ -111,6 +113,7 @@ void USBHandler::disconnect(bool bypass_wait) {
   }
 
   device_connected.store(false);
+  emit USBEmitter::instance().updateConnectionStatus(false);
 
   lock.unlock();
   spdlog::debug("Device disconnected.");
@@ -119,6 +122,7 @@ void USBHandler::disconnect(bool bypass_wait) {
 void USBHandler::read(std::atomic<bool>& kill) {
   while (!kill.load()) {
     while (!device_connected.load() && !kill.load()) {
+      USBHandler::connect();
       std::this_thread::yield();
     }
 
@@ -141,6 +145,7 @@ void USBHandler::read(std::atomic<bool>& kill) {
         lock.unlock();
         continue;
       case LIBUSB_SUCCESS:
+        emit USBEmitter::instance().updateRXMessageCount();
         break;
       default:
         std::cout << "Decant: Connection Lost." << std::endl;
@@ -154,13 +159,30 @@ void USBHandler::read(std::atomic<bool>& kill) {
       continue;
     }
 
+    // Format message and enqueue
     CANInterface::CANopenMessageRAW raw_msg{};
     memcpy(&raw_msg, data, sizeof(raw_msg));
-    CANInterface::push(raw_msg);
+    CANInterface::CANopenMessage msg = CANInterface::format_message(raw_msg);
+    if (raw_table) {
+      raw_table->updateTable(msg);
+    }
 
     lock.unlock();
   }
 
+  cleanup();
+
+  spdlog::debug("USB RX thread terminated.");
+}
+
+bool USBHandler::is_connected() {
+  std::unique_lock<std::mutex> lock(mtx);
+  return device_connected;
+}
+
+void USBHandler::add_table(RXCANTable* _table) { raw_table = _table; }
+
+void USBHandler::cleanup() {
   // Disconnect if connected
   if (device_connected.load()) {
     disconnect(true);
@@ -170,11 +192,9 @@ void USBHandler::read(std::atomic<bool>& kill) {
   if (ctx) {
     libusb_exit(ctx);
   }
-
-  spdlog::debug("USB RX thread terminated.");
 }
 
-bool USBHandler::is_connected() {
-  std::unique_lock<std::mutex> lock(mtx);
-  return device_connected;
+USBEmitter& USBEmitter::instance() {
+  static USBEmitter instance;
+  return instance;
 }

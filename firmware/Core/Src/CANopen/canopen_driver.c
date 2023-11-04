@@ -115,6 +115,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* _hcan) {
   CANopenMessage msg;
 
   if (HAL_CAN_GetRxMessage(_hcan, CAN_RX_FIFO0, &msg.header, msg.data) != HAL_OK) {
+    Error_Handler();
     return;
   }
 
@@ -132,8 +133,6 @@ void CANopen_Queue_Process() {
   if (status !=  osOK) {
     return;
   }
-
-  HAL_UART_Transmit(huart, (uint8_t*)"TX\n", sizeof("TX\n"), 100);
 
   // Transmit this message over USB
   CDC_Transmit_FS((uint8_t *)&msg, sizeof(msg));
