@@ -9,6 +9,7 @@
 #include <thread>
 #include <vector>
 
+#include "../widgets/rxcanfilteredtable.h"
 #include "../widgets/rxcantable.h"
 #include "can/can_interface.h"
 #include "spdlog/spdlog.h"
@@ -28,6 +29,7 @@ class USBHandler {
   static void disconnect(bool bypass_wait = false);
   static void read(std::atomic<bool>& kill);
   static void add_table(RXCANTable* _table);
+  static void add_table(RXCANFilteredTable* _table);
   static void cleanup();
   static bool is_connected();
 };

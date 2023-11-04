@@ -22,7 +22,8 @@ static constexpr uint8_t INTERFACE_NUM = 1;
 std::mutex mtx;
 
 /// Reference to raw rx table
-static RXCANTable* raw_table = nullptr;
+static RXCANTable* raw_table              = nullptr;
+static RXCANFilteredTable* filtered_table = nullptr;
 
 USBHandler::USBStatus USBHandler::connect() {
   // Once connected stop enumeration
@@ -167,6 +168,10 @@ void USBHandler::read(std::atomic<bool>& kill) {
       raw_table->updateTable(msg);
     }
 
+    if (filtered_table) {
+      filtered_table->updateTable(msg);
+    }
+
     lock.unlock();
   }
 
@@ -192,6 +197,9 @@ void USBHandler::cleanup() {
   if (ctx) {
     libusb_exit(ctx);
   }
+}
+void USBHandler::add_table(RXCANFilteredTable* _table) {
+  filtered_table = _table;
 }
 
 USBEmitter& USBEmitter::instance() {

@@ -17,7 +17,7 @@ QT_END_NAMESPACE
 class RXCANTable : public QWidget {
   Q_OBJECT
 
-  static constexpr int MAX_ROWS = 1000;
+  static constexpr int MAX_ROWS = 999;
   static inline int row_index   = 0;
 
  public:

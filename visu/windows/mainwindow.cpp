@@ -19,13 +19,23 @@ MainWindow::MainWindow(QWidget* parent)
   // Mode selector
   auto* modeSelector = new ModeSelector(this);
 
+  // Bit table inspector
+  auto* bitTable = new BitInspectorTable(this);
+  bitTable->setFixedWidth(450);
+
+  // Filtered table
+  auto* filteredTable = new RXCANFilteredTable(this);
+  USBHandler::add_table(filteredTable);
+
   ui->horizontalLayout->addWidget(modeSelector);
   ui->horizontalLayout->addWidget(ui->tabWidget);
+  ui->horizontalLayout->addWidget(bitTable);
 
   this->setCentralWidget(ui->horizontalLayoutWidget);
   ui->horizontalLayoutWidget->setContentsMargins(10, 10, 10, 10);
 
   ui->tabWidget->addTab(rx_table, "Unfiltered");
+  ui->tabWidget->addTab(filteredTable, "Filtered");
 
   // Setup status bar (bottom of screen bar)
   statusbar = new StatusBar(this);

@@ -6,7 +6,9 @@
 #include <QScreen>
 #include <QVBoxLayout>
 
+#include "bitinspectortable.h"
 #include "modeselector.h"
+#include "rxcanfilteredtable.h"
 #include "rxcantable.h"
 #include "statusbar.h"
 
