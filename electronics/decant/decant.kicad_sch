@@ -3394,6 +3394,10 @@
     (uuid fe4aaa0e-35be-44b0-85bf-748816884121)
   )
 
+  (text "LQH3NPN2R2MJRL" (at 92.075 192.405 90)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid 31aecd8c-5f91-47b4-8a23-428b27631c81)
+  )
   (text "1/4W" (at 83.185 163.83 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 4b1b17e0-7b3c-416e-9c42-1452e1dbdc0e)

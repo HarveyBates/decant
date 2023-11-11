@@ -20,8 +20,10 @@ MainWindow::MainWindow(QWidget* parent)
   auto* modeSelector = new ModeSelector(this);
 
   // Bit table inspector
-  auto* bitTable = new BitInspectorTable(this);
+  auto* inspectorLayout = new QVBoxLayout;
+  auto* bitTable        = new BitInspectorTable;
   bitTable->setFixedWidth(450);
+  inspectorLayout->addWidget(bitTable);
 
   // Filtered table
   auto* filteredTable = new RXCANFilteredTable(this);
@@ -29,7 +31,7 @@ MainWindow::MainWindow(QWidget* parent)
 
   ui->horizontalLayout->addWidget(modeSelector);
   ui->horizontalLayout->addWidget(ui->tabWidget);
-  ui->horizontalLayout->addWidget(bitTable);
+  ui->horizontalLayout->addLayout(inspectorLayout);
 
   this->setCentralWidget(ui->horizontalLayoutWidget);
   ui->horizontalLayoutWidget->setContentsMargins(10, 10, 10, 10);

@@ -21,7 +21,7 @@ BitInspectorTable::BitInspectorTable(QWidget *parent)
   ui->tableWidget->setVerticalHeaderLabels(headers);
 
   // Add table to vertical layout
-  ui->verticalLayout->addWidget(ui->tableWidget);
+  // ui->verticalLayout->addWidget(ui->tableWidget);
 
   ui->tableWidget->setAlternatingRowColors(true);
 
@@ -30,7 +30,10 @@ BitInspectorTable::BitInspectorTable(QWidget *parent)
     ui->tableWidget->setColumnWidth(i, 35);
   }
 
-  this->setLayout(ui->verticalLayout);
+  // ui->tableWidget->setFixedHeight(270);
+  // ui->tableWidget->setFixedWidth(500);
+
+  // this->setLayout(ui->verticalLayout);
 
   ui->tableWidget->show();
 }

@@ -52,24 +52,27 @@ void RXCANFilteredTable::updateTable(CANInterface::CANopenMessage& msg) {
     return;
   }
 
-  // Check if COB-ID is already present
-  int column        = 1;  // Select COB-ID column
-  auto* column_item = new QTableWidgetItem(
-      "0x" + QString("%1").arg(msg.cob_id, 4, 16, QChar('0')).toUpper());
-
-  for (int row = 0; row < ui->tableWidget->rowCount(); ++row) {
-    // Check if existing item matches msg COB-ID
-    QTableWidgetItem* existing_item = ui->tableWidget->item(row, column);
-    if (existing_item && existing_item->text() == column_item->text()) {
-      updateRow(msg, row);
+  int row_idx = 0;
+  for (const auto& row : filteredRows) {
+    if (msg.cob_id == row.cob_id) {
+      updateRow(msg, row_idx);
       return;
     }
+    row_idx++;
   }
 
   // COB-ID not found, create a new row with this current message
   updateRow(msg, row_index);                          // Create row
   row_index++;                                        // Update number of rows
-  ui->tableWidget->sortItems(1, Qt::AscendingOrder);  // Sort columns
+  ui->tableWidget->sortItems(1, Qt::AscendingOrder);  // Sort table
+
+  // Sort filtered rows in ascending order
+  int arraySize = sizeof(filteredRows) / sizeof(filteredRows[0]);
+  std::sort(filteredRows, filteredRows + arraySize,
+            [](const CANInterface::CANopenMessage& a,
+               const CANInterface::CANopenMessage& b) {
+              return a.cob_id < b.cob_id;
+            });
 }
 
 void RXCANFilteredTable::updateRow(CANInterface::CANopenMessage& msg,

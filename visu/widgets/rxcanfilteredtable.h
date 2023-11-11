@@ -21,6 +21,7 @@ class RXCANFilteredTable : public QWidget {
 
   static const int MAX_ROWS   = 100;
   static inline int row_index = 0;
+  CANInterface::CANopenMessage filteredRows[MAX_ROWS]{};
 
  public:
   explicit RXCANFilteredTable(QWidget *parent = nullptr);

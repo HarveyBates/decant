@@ -1,6 +1,8 @@
 #ifndef QT_VISU_BITINSPECTORTABLE_H
 #define QT_VISU_BITINSPECTORTABLE_H
 
+#include <QCheckBox>
+#include <QGroupBox>
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -13,11 +15,11 @@ class BitInspectorTable : public QWidget {
   Q_OBJECT
 
  public:
-  explicit BitInspectorTable(QWidget *parent = nullptr);
+  explicit BitInspectorTable(QWidget* parent = nullptr);
   ~BitInspectorTable() override;
 
  private:
-  Ui::BitInspectorTable *ui;
+  Ui::BitInspectorTable* ui;
 };
 
 #endif  // QT_VISU_BITINSPECTORTABLE_H
