@@ -1,6 +1,6 @@
 # Decant
 
-CAN-to-USB analyser. Designed to plug into existing CAN infrastructure for analysis. Focused on CANopen. UI is a work in progress, 
+CAN-to-USB analyser. Designed to plug into existing CAN infrastructure for analysis. Focused on CANopen. UI is a work in progress.
 
 ## Hardware
 
